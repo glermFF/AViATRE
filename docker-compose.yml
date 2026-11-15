@@ -1,0 +1,31 @@
+# AViATRE - docker-compose (Fase 0)
+# Perfis:
+#   offline : ambiente de experimentos (Fase 0/1)  <- único perfil ativo agora
+#   lab     : Mininet + Ryu + captura/extração    (Fase 2)  - ainda não implementado
+#   online  : detector + policy + actuator        (Fases 3-4) - ainda não implementado
+#
+# Uso:  docker compose --profile offline up -d --build
+#       docker compose --profile offline ps        (STATUS deve ficar "healthy")
+
+services:
+  workspace:
+    profiles: ["offline"]
+    build:
+      context: .
+      dockerfile: core/Dockerfile
+    image: aviatre/workspace:dev
+    container_name: aviatre-workspace
+    working_dir: /workspace
+    volumes:
+      - ./experiments:/workspace/experiments
+      - ./data:/workspace/data
+      - ./artifacts:/workspace/artifacts
+    healthcheck:
+      test: ["CMD", "python", "-c", "import aviatre_core; print(aviatre_core.__version__)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # Fases 2-4: adicionar aqui, um serviço por ferramenta de terceiros
+  # (mininet, ryu, capture, extractor) e os serviços finos (detector, policy, actuator).

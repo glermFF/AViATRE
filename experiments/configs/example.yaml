@@ -1,0 +1,21 @@
+# RASCUNHO do formato de experimento (Fase 1). Ainda não consumido por código.
+experiment: baseline-vs-generalizacao
+schema_version: "1-draft"
+datasets:
+  - id: cicids2017        # a confirmar (Q2)
+    path: data/cicids2017/
+detectors:
+  - name: random_forest
+    params: {n_estimators: 200}
+  - name: decision_tree
+    params: {max_depth: 20}
+  - name: catboost
+    params: {iterations: 300}
+protocols:
+  - kind: random_split            # baseline
+    test_size: 0.2
+  - kind: leave_attack_out        # generalização (ou temporal)
+repetitions: 30
+seed: 42
+metrics: [recall, precision, f1, roc_auc]
+confidence_level: 0.99
